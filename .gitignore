@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+.env
+.env.*
+
+# Raw UN Comtrade API responses (~26 MB). Regenerate with `npm run data:comtrade`;
+# the processed result is committed in public/data/flows.json.
+data-raw/comtrade-cache/

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trade-Flow Globe</title>
+  <meta name="description" content="Container trade on real sea lanes. Close Suez, Panama or Hormuz and watch trade reroute while transit-time and cost estimates tick up." />
+  <meta name="theme-color" content="#02040a" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Link previews. __SITE_URL__ is filled in at build time (see vite.config.js); crawlers need absolute URLs. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Trade-Flow Globe" />
+  <meta property="og:description" content="Close Suez, Panama or Hormuz and watch container trade reroute on real sea lanes, with transit-time and cost estimates." />
+  <meta property="og:url" content="__SITE_URL__/" />
+  <meta property="og:image" content="__SITE_URL__/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="A 3D globe with Asia–Europe container routes swinging around the Cape of Good Hope after the Suez Canal is closed" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Trade-Flow Globe" />
+  <meta name="twitter:description" content="Close Suez, Panama or Hormuz and watch container trade reroute on real sea lanes." />
+  <meta name="twitter:image" content="__SITE_URL__/og-image.jpg" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="globe"></div>
+
+  <aside id="panel">
+    <header>
+      <h1>Trade-Flow Globe</h1>
+      <p class="sub">Container trade on real sea lanes · click a chokepoint to close it</p>
+    </header>
+
+    <section class="kpis">
+      <div class="kpi"><span class="label">Trade rerouted</span><span class="value" id="kpi-rerouted">$0</span></div>
+      <div class="kpi"><span class="label">Avg Δ transit</span><span class="value" id="kpi-days">+0.0 d</span></div>
+      <div class="kpi"><span class="label">Δ cost / year</span><span class="value" id="kpi-cost">$0</span></div>
+      <div class="kpi"><span class="label">Trade stranded</span><span class="value" id="kpi-stranded">$0</span></div>
+    </section>
+
+    <section>
+      <h2>Chokepoints <small>· annual trade through each</small></h2>
+      <div id="chokepoint-list" class="chips"><span class="empty">Routing…</span></div>
+      <button id="reset" class="reset" type="button">Reopen all</button>
+    </section>
+
+    <section>
+      <h2>Most affected trade lanes</h2>
+      <div id="affected-list"></div>
+    </section>
+
+    <section>
+      <h2>Exporter region</h2>
+      <div id="legend" class="legend"></div>
+    </section>
+
+    <details>
+      <summary>Data &amp; model assumptions</summary>
+      <p class="note" id="data-note"></p>
+      <ul id="assumptions"></ul>
+      <p class="note">Last reroute computed in <span id="route-ms">–</span> (Web Worker).</p>
+    </details>
+  </aside>
+
+  <footer id="credits">
+    <p class="disclaimer">Routes, transit times and costs are model estimates for illustration, not observed shipping data or freight rates.</p>
+    <p>
+      Trade: <a href="https://comtradeplus.un.org/" target="_blank" rel="noopener">UN Comtrade</a> (UN Statistics Division), 2023 imports
+      · Sea lanes: <a href="https://github.com/eurostat/searoute" target="_blank" rel="noopener">Eurostat SeaRoute</a> (EUPL-1.2)
+      · Ports: <a href="https://unece.org/trade/cefact/unlocode-code-list-country-and-territory" target="_blank" rel="noopener">UN/LOCODE</a>
+      · Earth imagery: <a href="https://earthobservatory.nasa.gov/features/NightLights" target="_blank" rel="noopener">NASA Black Marble</a>
+      · Globe: <a href="https://github.com/vasturiano/globe.gl" target="_blank" rel="noopener">globe.gl</a> / three.js (MIT)
+    </p>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
