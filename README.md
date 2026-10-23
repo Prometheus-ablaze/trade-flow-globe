@@ -45,3 +45,7 @@ preview API. Set `COMTRADE_KEY` (a free "comtrade – v1" subscription) to use t
   than through Panama. Routing runs in a Web Worker, taking about 150 ms for all flows.
 - **Costs:** see `src/deltas.js`. These are model estimates from ship, fuel and inventory costs,
   not freight rates.
+
+## Licence
+
+Code: [MIT](LICENSE). Bundled and derived data and imagery keep their own terms; see [NOTICE.md](NOTICE.md).
