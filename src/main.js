@@ -58,7 +58,6 @@ const globe = new Globe(document.getElementById('globe'))
   .backgroundImageUrl('/img/night-sky.png')
   .atmosphereColor('#3b82f6')
   .atmosphereAltitude(0.18)
-  .pointOfView({ lat: 22, lng: 70, altitude: 2.5 })
   .pathPoints('pts')
   .pathPointLat((p) => p[0])
   .pathPointLng((p) => p[1])
@@ -105,13 +104,31 @@ function pauseRotation() {
 }
 controls.addEventListener('start', pauseRotation);
 
-// Keep the globe centred in the space the side panel (or bottom sheet on phones) leaves free.
+// Keep the globe centred in the space the side panel (or bottom sheet on phones) leaves free, and pick
+// a camera altitude at which the whole globe fits that space.
+const PHONE = window.matchMedia('(max-width: 640px)');
+const credits = document.getElementById('credits');
+let fitAltitude = 2.5;
 function fitViewport() {
-  globe.width(window.innerWidth).height(window.innerHeight);
+  const W = window.innerWidth, H = window.innerHeight;
+  globe.width(W).height(H);
   const panel = document.getElementById('panel').getBoundingClientRect();
-  globe.globeOffset(window.innerWidth >= 640 ? [-(panel.width + 16) / 2, 0] : [0, -(panel.height + 16) / 2]);
+  const phone = PHONE.matches;
+  globe.globeOffset(phone ? [0, -(panel.height + 16) / 2] : [-(panel.width + 16) / 2, 0]);
+
+  // On phones the credits live at the end of the bottom sheet instead of floating over the globe.
+  const creditsHome = phone ? document.getElementById('panel') : document.body;
+  if (credits.parentElement !== creditsHome) creditsHome.append(credits);
+
+  // Silhouette radius r (px) of a sphere seen from distance d: tan(asin(R/d)) = r / (H/2) * tan(fov/2)
+  const freeW = phone ? W : W - panel.width - 32, freeH = phone ? H - panel.height - 24 : H;
+  const radiusPx = 0.42 * Math.min(freeW, freeH);
+  const halfFov = (globe.camera().fov / 2) * Math.PI / 180;
+  const theta = Math.atan((radiusPx / (H / 2)) * Math.tan(halfFov));
+  fitAltitude = Math.min(5, Math.max(1.8, 1 / Math.sin(theta) - 1));
 }
 fitViewport();
+globe.pointOfView({ lat: 22, lng: 70, altitude: fitAltitude });
 window.addEventListener('resize', fitViewport);
 
 // ---------- path drawing ----------
@@ -198,7 +215,7 @@ function toggle(cp, focus) {
   cp.closed = !cp.closed;
   if (focus) {
     pauseRotation();
-    globe.pointOfView({ lat: cp.lat, lng: cp.lng, altitude: 2.3 }, 1200);
+    globe.pointOfView({ lat: cp.lat, lng: cp.lng, altitude: fitAltitude * 0.92 }, 1200);
   }
   requestRoutes();
 }
